@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -84,8 +85,48 @@ public class BookExcelController {
         response.getOutputStream().flush();
         response.getOutputStream().close();
         //TODO  页面下载是乱码，何解？
-
-
         return Result.success("","");
+    }
+
+    /**
+     * 页面下载的第二种方法
+     * @param response
+     * @return
+     * @throws IOException
+     *
+     * TODO 页面下载是乱码
+     */
+    @PostMapping("/down2")
+    public Result download2(HttpServletResponse response) throws IOException {
+        HSSFWorkbook workbook = ExcelUtils.createExcel(bookList, dto);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        workbook.write(os);
+        byte[] content = os.toByteArray();
+        InputStream is = new ByteArrayInputStream(content);
+        response.reset();
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename=" + new String(("名字" + ".xls").getBytes(), "iso-8859-1"));
+        ServletOutputStream out = response.getOutputStream();
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+            bis = new BufferedInputStream(is);
+            bos = new BufferedOutputStream(out);
+            byte[] buff = new byte[2048];
+            int bytesRead;
+            while (-1 != (bytesRead = bis.read(buff,0,buff.length))){
+                bos.write(buff,0,bytesRead);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (bis != null){
+                bis.close();
+            }
+            if (bos != null){
+                bos.close();
+            }
+        }
+        return null;
     }
 }
