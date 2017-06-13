@@ -45,6 +45,14 @@ public class Result {
         return result;
     }
 
+    public static Result success() {
+        Result result = new Result();
+        result.setCode(0);
+        result.setMsg("success");
+
+        return result;
+    }
+
     public static Result error(String msg) {
         Result result = new Result();
         result.setCode(-1);

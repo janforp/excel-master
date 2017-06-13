@@ -9,6 +9,8 @@
     <modules>
         <module>poi-excel</module>
         <module>excel-common</module>
+        <module>jxl-excel</module>
+        <module>download-file</module>
     </modules>
     <packaging>pom</packaging>
 

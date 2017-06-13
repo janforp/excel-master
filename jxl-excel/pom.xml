@@ -9,19 +9,21 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>poi-excel</artifactId>
+    <artifactId>jxl-excel</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.15</version>
-        </dependency>
         <dependency>
             <groupId>com.janita.excel</groupId>
             <artifactId>excel-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/jexcelapi/jxl -->
+        <dependency>
+            <groupId>jexcelapi</groupId>
+            <artifactId>jxl</artifactId>
+            <version>2.4.2</version>
+        </dependency>
+
     </dependencies>
 
 

@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.junit.Test;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +49,59 @@ public class BookExcelController {
         file(out,filePath);
     }
 
+    /**
+     * 读取本地文件到页面直接下载
+     * @throws IOException
+     */
+    @PostMapping("/excelAndDownload")
+    @ApiOperation(value = "excelAndDownload")
+    public void createExcelAndDownload(HttpServletResponse response) throws IOException {
+        //把该文件写入 response
+        response.setContentType("application/x-msdownload");
+        response.setCharacterEncoding("utf-8");
+        //设置Content-Disposition
+        response.setHeader("Content-Disposition", "attachment;filename="+"x.txt");
+        //读取文件
+        InputStream in = new FileInputStream("c://新建文本文档.txt");
+        Writer outputStream = response.getWriter();
+        //写文件
+        int b;
+        while((b=in.read())!= -1)
+        {
+            outputStream.write(b);
+        }
+
+        in.close();
+        outputStream.close();
+    }
+
+    @PostMapping("/down3")
+    public void down3(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String fileName = "c://新建文本文档.txt";
+        String filePath = "c://新建文本文档.txt";
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        bis = new BufferedInputStream(new FileInputStream(filePath));
+        bos = new BufferedOutputStream(response.getOutputStream());
+        long fileLength = new File(filePath).length();
+        response.setContentType("multipart/form-data");
+        /**
+        *  解决各浏览器的中文乱码问题
+        */
+        String userAgent = request.getHeader("User-Agent");
+        byte[] bytes = userAgent.contains("MSIE") ? fileName.getBytes() : fileName.getBytes("UTF-8");
+        fileName = new String(bytes, "UTF-8");
+        response.setHeader("Content-disposition",
+                String.format("attachment; filename=\"%s\"", fileName));
+        response.setHeader("Content-Length", String.valueOf(fileLength));
+        byte[] buff = new byte[2048];
+        int bytesRead;
+        while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+            bos.write(buff, 0, bytesRead);
+        }
+        bis.close();
+        bos.close();
+    }
     /**
      * 生成本地文件，并且返回文件路径给前端
      * @param request
