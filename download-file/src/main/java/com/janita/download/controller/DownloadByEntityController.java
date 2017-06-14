@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 
 import static com.janita.download.constant.DownloadConsts.APPLICATION_PDF;
 import static com.janita.download.util.DownloadUtils.getFile;
+import static com.janita.download.util.DownloadUtils.setFileDownloadHeader;
 
 /**
  * Created by Janita on 2017/6/14 0014- 上午 9:22
@@ -74,14 +76,15 @@ public class DownloadByEntityController {
      * @return
      */
     @RequestMapping(value = "/bbbb", method = RequestMethod.POST, produces = APPLICATION_PDF)
-    public HttpEntity<byte[]> download_get_2(@RequestBody UserBean userBean) throws IOException {
+    public HttpEntity<byte[]> download_get_2(@RequestBody UserBean userBean, HttpServletResponse response) throws IOException {
         System.out.println("\n****** " + userBean);
         File file = getFile();
         byte[] document = FileCopyUtils.copyToByteArray(file);
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "pdf"));
         header.setContentLength(document.length);
-        header.set("Content-Disposition", "attachment; filename=" + file.getName());
+//        header.set("Content-Disposition", "attachment; filename=" + "中文.pdf");
+        setFileDownloadHeader(response,"中文.pdf");
         return new HttpEntity<>(document, header);
     }
 }
