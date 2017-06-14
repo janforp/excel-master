@@ -1,8 +1,5 @@
 package com.janita.download.controller;
 
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,13 +11,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static com.janita.download.util.DownloadUtils.getFile;
+
 /**
  * Created by Janita on 2017/6/13 0013- 下午 6:28
  * 该类是：
  */
 @RestController
 @RequestMapping("/download")
-public class DownloadController {
+public class DownloadByResponseController {
 
     private final String APPLICATION_PDF = "application/pdf";
 
@@ -34,20 +33,4 @@ public class DownloadController {
         response.setHeader("Content-Length", String.valueOf(file.length()));
         FileCopyUtils.copy(in, response.getOutputStream());
     }
-
-    private File getFile(){
-        ResourceLoader loader = new DefaultResourceLoader();
-        Resource resource = loader.getResource(ResourceLoader.CLASSPATH_URL_PREFIX + "static/1.xls");
-        try {
-            File file = new File(resource.getURL().getPath());
-            if (!file.exists()){
-                return null;
-            }
-            return file;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 }
